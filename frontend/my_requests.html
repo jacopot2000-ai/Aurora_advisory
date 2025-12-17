@@ -1,0 +1,152 @@
+<!--my_requests.html
+  Scopo: pagina client “Le mie richieste”.
+  - Mostra form “Nuova richiesta” + tabella richieste dell’utente autenticato.
+  - my_requests.js gestisce: GET /requests/me, POST /requests, PATCH /requests/me/{id} (cancel -> status cancelled), e modale storico.
+  Dipendenze:
+  - styles.css per UI coerente con dashboard
+  - api.js per fetch autenticato
+  - my_requests.js per logica pagina-->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <title>Aurora Advisory - Le mie richieste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+    <div class="app-shell">
+
+  <!-- Topbar: stesso pattern UI della dashboard (coerenza visiva). Esci = logout client-side -->
+
+  <header class="app-header">
+    <div class="app-header-left">
+      <h1 class="app-logo">Aurora Advisory</h1>
+      <span class="app-tagline">Area riservata</span>
+    </div>
+
+    <div class="app-header-right">
+      <button id="back-to-dashboard-button" type="button" class="btn-secondary">
+        Torna alla dashboard
+      </button>
+      <button id="logout-button" type="button" class="btn-danger">
+        Esci
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+            <section class="card">
+            <h2>Le mie richieste</h2>
+            <p class="muted">
+                Qui trovi lo storico delle richieste che hai inviato. Quando invierai nuove richieste,
+                le vedrai comparire in questa tabella con il relativo stato di lavorazione.
+            </p>
+
+            <div id="error-box" class="error-message" style="display: none;"></div>
+
+            <p id="no-requests-msg" class="muted" style="display: none;">
+                Non hai ancora inviato nessuna richiesta.
+            </p>
+
+<!--Form nuova richiesta:
+  - Invia una richiesta di consulenza (goal, amount, time_horizon_years, risk_profile)
+  - Validazione base lato client in my_requests.js prima della POST-->
+
+        <section class="card">
+        <h2>Nuova richiesta</h2>
+        <p>
+            Compila il form qui sotto per inviare una nuova richiesta di consulenza.
+        </p>
+
+        <form id="new-request-form">
+            <div class="form-row">
+                <label for="goal-input">Obiettivo</label>
+                <input id="new-request-goal"
+                name="goal"
+                type="text"
+                required
+                />
+            </div>
+
+            <div class="form-row">
+                <label for="amount-input">Importo (€)</label>
+                <input
+                    id="new-request-amount"
+                    name="amount"
+                    type="number"
+                    min="1"
+                    step="0.01"
+                    required
+                    />
+            </div>
+
+            <div class="form-row">
+                <label for="time-horizon-input">Orizzonte temporale (anni)</label>
+                <input
+                    id="new-request-time-horizon"
+                    name="time_horizon_years"
+                    type="number"
+                    min="1"
+                    max="50"
+                    step="1"
+                    required
+                    />
+            </div>
+
+            <div class="form-row">
+                <label for="risk-profile-select">Profilo di rischio</label>
+                <select id="new-request-risk-profile" name="risk_profile" required>
+                <option value="">Seleziona...</option>
+                <option value="prudente">Prudente</option>
+                <option value="equilibrato">Equilibrato</option>
+                <option value="dinamico">Dinamico</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submitRequest" class="btn btn-primary">Invia richiesta</button>
+        </form>
+        </section>
+    <!--Tabella richieste:
+      - tbody id="requestsTableBody" viene riempito dinamicamente da my_requests.js
+      - Azioni: Storico (GET /requests/{id}/history), Cancella -> status "cancelled" (PATCH /requests/me/{id})
+      Nota: “cancelled” resta visibile (non elimina la riga).-->
+
+           <div class="table-wrapper">
+                <table id="requests-table" class="requests-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Obiettivo</th>
+                            <th>Importo</th>
+                            <th>Profilo di rischio</th>
+                            <th>Stato</th>
+                            <th>Data richiesta</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-table-body">
+                        <!-- lasci pure vuoto, le righe le aggiunge JS -->
+                    </tbody>
+
+                </table>
+            </div>
+        </section>
+    </main>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/my_requests.js"></script>
+
+<div id="historyModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="historyTitle">Storico richiesta</h3>
+      <button id="historyClose" class="btn-sm">Chiudi</button>
+    </div>
+    <div id="historyBody" class="modal-body"></div>
+  </div>
+</div>
+
+
+</body>
+</html>

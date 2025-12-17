@@ -1,0 +1,216 @@
+<!--
+  dashboard.html
+  Scopo: pagina “Il tuo profilo” visibile dopo login.
+  - Mostra il form profilo utente (client_profiles) e un riepilogo leggibile sotto.
+  - dashboard.js gestisce: caricamento dati profilo, salvataggio, messaggi di stato, e visibilità pulsante “Gestione richieste” in base al ruolo.
+  Dipendenze:
+  - styles.css per layout e componenti (topbar, card, button)
+  - api.js per wrapper fetch con token
+  - dashboard.js per logica UI + chiamate API
+-->
+
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aurora Advisory – Area riservata</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="app-shell">
+      
+      <!-- Topbar: branding + navigazione rapida + pulsante Esci (logout lato client: token cleanup + redirect) -->
+
+      <header class="app-header">
+        <div class="app-brand">
+          <span class="app-logo-dot"></span>
+          <span class="app-brand-text">Aurora Advisory</span>
+        </div>
+
+        <div class="app-header-right">
+          <span id="welcome-text" class="welcome-text">
+            Carico il tuo profilo...
+          </span>
+          <button id="admin-requests-btn" class="secondary-btn" style="display:none;">
+            Gestione richieste
+          </button>
+          <button onclick="window.location.href='/app/my-requests'" class="secondary-btn">
+              Le mie richieste
+          </button>
+          <button id="logout-btn" class="btn-danger">
+            Esci
+          </button>          
+        </div>
+      </header>
+
+      <!--Form profilo:
+            - id="profile-form" è il riferimento per submit gestito in dashboard.js
+            - id="profile-message" è l’area feedback (salvato/errore)
+            - I campi sono mappati 1:1 con lo schema profilo (nome, cognome, data, telefono, reddito, obiettivo, orizzonte, rischio)
+          -->
+
+      <main class="app-main">
+        <div class="dashboard-grid">
+          <!-- COLONNA SINISTRA: FORM PROFILO -->
+          <section class="card">
+            <h1 class="card-title">Il tuo profilo</h1>
+            <p class="card-subtitle">
+              Inserisci alcune informazioni di base: ci servono per preparare
+              una consulenza più precisa e su misura.
+            </p>
+
+            <form id="profile-form" class="profile-form">
+              <!-- Nome -->
+              <div class="form-row">
+                <label class="field-label" for="first_name">Nome</label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  class="input"
+                  placeholder="Mario"
+                  autocomplete="given-name"
+                  required
+                />
+              </div>
+
+              <!-- Cognome -->
+              <div class="form-row">
+                <label class="field-label" for="last_name">Cognome</label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  class="input"
+                  placeholder="Rossi"
+                  autocomplete="family-name"
+                  required
+                />
+              </div>
+
+              <!-- Data di nascita -->
+              <div class="form-row">
+                <label class="field-label" for="date_of_birth">
+                  Data di nascita
+                </label>
+                <input
+                  type="date"
+                  id="date_of_birth"
+                  name="date_of_birth"
+                  class="input"
+                  required
+                />
+              </div>
+
+              <!-- Telefono -->
+              <div class="form-row">
+                <label class="field-label" for="phone">Telefono</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  class="input"
+                  placeholder="+39 333 1234567"
+                />
+              </div>
+
+              <!-- Reddito annuo -->
+              <div class="form-row">
+                <label class="field-label" for="income">
+                  Reddito annuo (€/anno)
+                </label>
+                <input
+                  type="number"
+                  id="income"
+                  name="income"
+                  class="input"
+                  min="0"
+                  step="1000"
+                  placeholder="es. 35000"
+                />
+              </div>
+
+              <!-- Obiettivo principale -->
+              <div class="form-row">
+                <label class="field-label" for="main_goal">
+                  Obiettivo principale
+                </label>
+                <textarea
+                  id="main_goal"
+                  name="main_goal"
+                  class="input textarea"
+                  rows="3"
+                  placeholder="Esempio: costruire un piano per la pensione, mettere da parte per i figli, proteggere il capitale..."
+                ></textarea>
+              </div>
+
+              <!-- Orizzonte temporale -->
+              <div class="form-row">
+                <label class="field-label" for="time_horizon_years">
+                  Orizzonte temporale (anni)
+                </label>
+                <input
+                  type="number"
+                  id="time_horizon_years"
+                  name="time_horizon_years"
+                  class="input"
+                  min="0"
+                  max="60"
+                  placeholder="es. 10"
+                />
+              </div>
+
+              <!-- Profilo di rischio -->
+              <div class="form-row">
+                <label class="field-label" for="risk_profile">
+                  Profilo di rischio
+                </label>
+                <select
+                  id="risk_profile"
+                  name="risk_profile"
+                  class="input"
+                >
+                  <option value="">Seleziona un profilo</option>
+                  <option value="conservativo">Conservativo</option>
+                  <option value="moderato">Moderato</option>
+                  <option value="dinamico">Dinamico</option>
+                </select>
+              </div>
+
+              <!-- Messaggio di stato -->
+              <p id="profile-message" class="form-message"></p>
+
+              <!-- Pulsante salva -->
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  Salva profilo
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Riepilogo profilo: dashboard.js popola il contenuto leggibile per conferma visiva dei dati salvati -->
+
+          <section class="card">
+            <h2 class="card-title">Riepilogo profilo</h2>
+            <p class="card-subtitle">
+              Qui vedrai un breve riepilogo dei dati che hai inserito,
+              così puoi controllare che tutto sia corretto.
+            </p>
+
+            <div id="profile-summary">
+              <div class="profile-summary">
+                  Non hai ancora completato il tuo profilo. Compila il modulo a sinistra e salva per vedere qui il riepilogo.
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- JS -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+  </body>
+</html>

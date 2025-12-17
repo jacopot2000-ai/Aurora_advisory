@@ -1,0 +1,93 @@
+<!--requests_admin.html
+  Scopo: pannello advisor/admin per gestione richieste di tutti gli utenti.
+  - Filtra per stato, visualizza dettagli e ruolo utente.
+  - Azioni: storico, cancellazione (set cancelled), modifica stato (pending/in_review/completed).
+  - requests_admin.js gestisce rendering tabella + chiamate API + modale storico.
+  Dipendenze:
+  - styles.css (tabella + topbar + bottoni)
+  - api.js (fetch autenticato)
+  - requests_admin.js (logica pagina admin)-->
+
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aurora Advisory - Richieste clienti</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <div class="app-header-left">
+          <h1 class="app-logo">Aurora Advisory</h1>
+          <span class="app-tagline">Gestione richieste</span>
+        </div>
+
+        <div class="app-header-right">
+          <button id="btnDashboard" class="btn-secondary">Torna alla dashboard</button>
+          <button id="btnLogout" class="btn-danger">Esci</button>
+        </div>
+      </header>
+
+    <main class="app-main">
+      <h1>Richieste dei clienti</h1>
+
+      <!-- Filtro stato: aggiorna la lista richieste (richiama render/refresh in requests_admin.js) -->
+
+      <section class="filters">
+        <label>
+          Stato:
+          <select id="statusFilter">
+            <option value="">Tutti</option>
+            <option value="pending">pending</option>           
+            <option value="completed">completed</option>  
+             <option value="cancelled">cancelled</option>
+          </select>
+        </label>
+      </section>
+
+      <!--Tabella richieste (admin):
+      - tbody id="requestsTableBody" popolato via JS
+      - Colonna “Ruolo” mostra user.role (client/advisor) per contesto operativo
+      - “Modifica stato” è un select che esegue PATCH /requests/{id}
+      - “Cancella” non elimina la riga: imposta status cancelled (audit + storico consultabile)-->
+
+      <section>
+        <table class="requests-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Obiettivo</th>
+              <th>Importo</th>
+              <th>Profilo rischio</th>
+              <th>Stato</th>
+              <th>Data richiesta</th>
+              <th>Ruolo</th>
+              <th>Storico</th>
+              <th>Cancella</th>
+              <th>Modifica stato</th>
+            </tr>
+          </thead>
+          <tbody id="requestsTableBody">
+            <!-- righe generate da JS -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/requests_admin.js" defer></script>
+
+      <div id="historyModal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="historyTitle">Storico richiesta</h3>
+            <button id="historyClose" class="btn-sm">Chiudi</button>
+          </div>
+          <div id="historyBody" class="modal-body"></div>
+        </div>
+      </div>
+  
+  </body>
+</html>

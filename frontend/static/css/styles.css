@@ -1,0 +1,334 @@
+/*  Aurora Advisory – Stili globali UI (frontend)
+   Obiettivo: dare coerenza visiva a tutte le pagine (auth, dashboard, client, advisor).
+   Contiene:
+   - Layout base (sfondo, tipografia)
+   - Barra top (tema blu) e pulsanti azione (primari/secondari/danger)
+   - Tabelle (my-requests / requests-admin)
+   Nota: login/registrazione volutamente semplici ma coerenti con il tema.*/
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f7fb;
+}
+
+/* ---------- Auth pages (login / registrazione) ---------- */
+
+.auth-container {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.auth-container h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 999px;
+  border: 1px solid #d0d4e4;
+  background: #f3f4fb;
+  cursor: pointer;
+}
+
+.auth-tabs button.active {
+  background: #1e40af;
+  color: #ffffff;
+  border-color: #1e40af;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #333;
+}
+
+.auth-form input {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.auth-form button {
+  margin-top: 8px;
+  padding: 10px 0;
+  border-radius: 999px;
+  border: none;
+  background: #1e40af;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background: #1d4ed8;
+}
+
+.hidden {
+  display: none;
+}
+
+.auth-message {
+  min-height: 18px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+
+/* ----- Layout app interna ----- */
+
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* === HEADER UNIFICATO === */
+.app-header {
+  background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+  color: white;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header h1,
+.app-header span {
+  color: white;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+.app-logo {
+    margin: 0;
+    font-size: 24px;
+}
+
+.app-tagline {
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.app-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-user-label {
+    font-size: 14px;
+}
+
+.logout-button {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    background-color: #ff5c5c;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.logout-button:hover {
+    background-color: #e04545;
+    transform: translateY(-1px);
+}
+
+.app-main {
+    flex: 1;
+    max-width: 1100px;
+    margin: 32px auto 40px;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 24px;
+    box-shadow: 0 18px 45px rgba(15, 52, 96, 0.08);
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 30px;
+}
+
+.field-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7a869a;
+    margin-bottom: 4px;
+}
+
+.field-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+
+.muted-text {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal.hidden { display: none; }
+
+.modal-content {
+  background: #fff;
+  width: min(800px, 92vw);
+  max-height: 80vh;
+  overflow: auto;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* ---------- Buttons: primary / secondary / danger ---------- */
+
+button,
+.btn,
+.btn-sm {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+button:hover,
+.btn:hover,
+.btn-sm:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* Varianti */
+.btn-primary {
+  background-color: #1e3a8a;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #111;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+/* ---------- Tables (client/admin): leggibilità e spaziatura ---------- */
+
+.requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.requests-table thead {
+  background-color: #1e3a8a;
+  color: white;
+}
+
+.requests-table th {
+  padding: 14px 12px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.requests-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.requests-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.welcome-text {
+  font-weight: 600;
+  margin-right: 12px;
+}
