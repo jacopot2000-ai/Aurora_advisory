@@ -101,6 +101,10 @@ Area Consulente (Advisor):
 * Consultazione dello storico associato a ciascuna richiesta
 
 
+Nota: in ambiente di test, l’assegnazione del ruolo di consulente (advisor) avviene tramite aggiornamento diretto del campo `role` nella tabella `users` all'interno del database.
+      In un contesto reale, tale operazione sarebbe ovviamente gestita da procedure amministrative di onboarding e autorizzazione dedicate.
+
+
 Documentazione API:
 
 Le API REST sono documentate tramite **Swagger** e accessibili all’indirizzo:
